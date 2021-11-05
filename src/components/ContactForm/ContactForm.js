@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {v4 as uuidv4} from "uuid";
 import style from './styles/contactForm.module.scss';
 import {addContact} from '../../redux/actions';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 export default function ContactForm({onSave}) {
 
@@ -11,6 +11,7 @@ export default function ContactForm({onSave}) {
 
     const dispatch=useDispatch();
     const onSubmit=(value) => dispatch(addContact(value));
+    const contacts=useSelector(state => state.contacts.items);
 
     const handleChange = (e) => {
         const {name,value}=e.currentTarget;
@@ -36,6 +37,14 @@ export default function ContactForm({onSave}) {
             name,
             number
         }
+
+       const cloneName= contacts.find(({name}) => contact.name.toLowerCase() === name.toLowerCase())
+
+       if(cloneName) {
+           const {name}=cloneName;
+           alert(`${name} is already in contacts`);
+           return;
+       }
 
         onSubmit(contact);
         onSave();
